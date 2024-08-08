@@ -1,31 +1,33 @@
 
-import React, { useState, useRef } from 'react'
+import React, { useState, useRef, useEffect } from 'react'
 
-function Card({ todo, addTodoText, setAddTodoText, todoList, setTodoList, addTodoFieldRef }) {
+function Card({ todo, addTodoText, setAddTodoText, todoList, setTodoList, addTodoFieldRef,  saveToLS }) {
   const [checked, setChecked] = useState(false)
 
   const handleChange = (e) => {
     todo.isCompleted = !checked
     setChecked(todo.isCompleted)
   }
-
+  
   const handleEdit = (e) => {
     const id = e.target.name.toString()
     const newArr = todoList.filter(item => item.id !== id )
     setTodoList(newArr)
+    saveToLS(newArr)
+
     todoList.forEach(elem => {
       if (elem.id === id) {
         setAddTodoText(elem.text)
       }
     })
-    // handleDel(e)
-    if (addTodoFieldRef.current) addTodoFieldRef.current.focus();
+    if (addTodoFieldRef.current) addTodoFieldRef.current.focus()
   }
   
   const handleDel = (e) => {
     const id = e.target.name.toString()
     const newArr = todoList.filter(item => item.id !== id )
     setTodoList(newArr)
+    saveToLS(newArr)
   }
 
   return (

@@ -8,6 +8,11 @@ function App() {
   const addTodoFieldRef = useRef(null)
   const [todoList, setTodoList] = useState([])
   const [addTodoText, setAddTodoText] = useState('')
+
+  const saveToLS = (todoList) => {
+    localStorage.setItem("todoList", JSON.stringify(todoList));
+  }
+
   function NothingToShow() {
     if (todoList.length == 0)
       return (
@@ -18,7 +23,7 @@ function App() {
   const handleChange = (e) => {
     setAddTodoText(e.target.value)
   }
-
+  
   const handleSave = (e) => {
     if (!addTodoText.toString()) {
       alert('Please enter a valid note.')
@@ -28,10 +33,30 @@ function App() {
     newArr.push({ id: uuidv4(), text: addTodoText, isCompleted: false })
     setTodoList(newArr)
     setAddTodoText('')
+    saveToLS(newArr)
   }
   
+  useEffect(() => {
+    const storedItem = localStorage.getItem("todoList");
+    if (storedItem) {
+      const newArr = JSON.parse(storedItem)
+      setTodoList(newArr)
+    }
+  }, [])
 
+  // useEffect(() => {
+    // let storedItem = localStorage.getItem("todoList");
+    // console.log(1, storedItem, todoList)
+    // localStorage.setItem("todoList", JSON.stringify(todoList));
+    // const storedItem = localStorage.getItem("todoList")
+    // if (storedItem) {
+    //   const newArr = JSON.parse(storedItem)
+    //   setTodoList(newArr)
+    // }
+    // console.log(2, storedItem, todoList)
+  // }, [todoList])
 
+  
   return (
     <div className="w-screen h-screen">
       <div className="text-4xl font-bold bg-violet-950 text-white text-center py-4 mx-auto w-full">ToDo List App</div>
@@ -45,7 +70,7 @@ function App() {
           <div className="flex flex-col justify-center bg-violet-100 w-3/4 mx-auto p-4 rounded-3xl my-8">
             {<NothingToShow />}
             {todoList.map((todo) => {
-              return <Card todo={todo} addTodoText={addTodoText} setAddTodoText={setAddTodoText} todoList={todoList} setTodoList={setTodoList} addTodoFieldRef={addTodoFieldRef} />
+              return <Card key={todo.id} todo={todo} addTodoText={addTodoText} setAddTodoText={setAddTodoText} todoList={todoList} setTodoList={setTodoList} addTodoFieldRef={addTodoFieldRef} saveToLS={saveToLS} />
             })}
           </div>
           {/* <div className="w-full flex justify-end pr-8 my-8">
